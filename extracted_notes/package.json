@@ -1,0 +1,8 @@
+{
+  "name": "extracted-notes",
+  "private": true,
+  "scripts": {
+    "build:manifest": "node scripts/update-manifest.js",
+    "build:pages": "npm run build:manifest && node scripts/copy-assets.js"
+  }
+}

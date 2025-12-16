@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HTML Exports</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --panel: #ffffff;
+      --accent: #2563eb;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e5e7eb;
+      --shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.08), transparent 28%), var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 32px 18px 48px;
+    }
+    .frame {
+      width: min(900px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+      padding: 24px 22px 28px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 32px);
+      letter-spacing: -0.02em;
+      color: #111827;
+    }
+    .hint {
+      color: var(--muted);
+      margin: 2px 0 0;
+      font-size: 14px;
+    }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card {
+      display: block;
+      padding: 14px 16px 16px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.02), rgba(37, 99, 235, 0.04));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+    }
+    .card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(37, 99, 235, 0.35);
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(37, 99, 235, 0.08));
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
+    }
+    .name {
+      font-weight: 600;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      color: #0f172a;
+    }
+    .meta {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .status {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .error {
+      color: #b91c1c;
+    }
+    @media (max-width: 600px) {
+      .frame { padding: 20px 16px 24px; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <header>
+      <h1>HTML Exports</h1>
+      <p class="hint">Auto-listed from <code>/html</code>. Drop exports there and rebuild the manifest.</p>
+    </header>
+    <div id="list" class="grid" aria-live="polite"></div>
+    <p id="status" class="status">Loading items…</p>
+  </div>
+
+  <template id="item-template">
+    <a class="card" target="_blank" rel="noopener">
+      <div class="name"></div>
+      <div class="meta"></div>
+    </a>
+  </template>
+
+  <script>
+    const folder = "html";
+    const branch = "main";
+    const defaultRepoName = "extracted_notes";
+
+    const hostnameParts = window.location.hostname.split(".");
+    const repoOwner = window.location.hostname.endsWith("github.io") ? hostnameParts[0] : "";
+    const pathParts = window.location.pathname.replace(/^\/+/, "").split("/").filter(Boolean);
+    const repoName = pathParts[0] || defaultRepoName;
+
+    const apiUrl = repoOwner && repoName
+      ? `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folder}?ref=${branch}`
+      : null;
+    const manifestUrl = "manifest.json";
+
+    const listEl = document.getElementById("list");
+    const statusEl = document.getElementById("status");
+    const itemTemplate = document.getElementById("item-template");
+
+    function formatName(filename) {
+      return filename.replace(/\.html$/i, "").replace(/[-_]+/g, " ");
+    }
+
+    function render(files) {
+      const sorted = [...files].sort((a, b) => b.name.localeCompare(a.name));
+      listEl.innerHTML = "";
+
+      if (!sorted.length) {
+        statusEl.textContent = "No HTML exports found in /html yet.";
+        return;
+      }
+
+      sorted.forEach((file) => {
+        const node = itemTemplate.content.cloneNode(true);
+        const link = node.querySelector("a");
+        const nameEl = node.querySelector(".name");
+        const metaEl = node.querySelector(".meta");
+
+        const prettyName = formatName(file.name);
+        link.href = `${folder}/${file.name}`;
+        link.title = `Open ${file.name}`;
+        nameEl.textContent = prettyName;
+        metaEl.textContent = file.name;
+        listEl.appendChild(node);
+      });
+
+      statusEl.textContent = `Found ${sorted.length} item${sorted.length === 1 ? "" : "s"}.`;
+    }
+
+    async function fetchFromApi() {
+      if (!apiUrl) throw new Error("GitHub API context unavailable");
+      const response = await fetch(apiUrl);
+      if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
+      const files = await response.json();
+      return files
+        .filter((file) => file.type === "file" && file.name.endsWith(".html"))
+        .map((file) => ({ name: file.name }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    async function fetchManifest() {
+      const response = await fetch(manifestUrl, { cache: "no-cache" });
+      if (!response.ok) throw new Error(`Manifest fetch failed (${response.status})`);
+      const names = await response.json();
+      if (!Array.isArray(names)) return [];
+      return names
+        .filter((name) => typeof name === "string" && name.endsWith(".html"))
+        .map((name) => ({ name }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    async function loadFiles() {
+      try {
+        const files = await fetchManifest();
+        if (files.length) {
+          render(files);
+          return;
+        }
+      } catch (err) {
+        console.warn("Manifest fetch failed, trying GitHub API", err);
+      }
+
+      try {
+        const files = await fetchFromApi();
+        render(files);
+      } catch (error) {
+        statusEl.textContent = "Unable to load list automatically. Files are under /html/.";
+        statusEl.classList.add("error");
+        console.error(error);
+      }
+    }
+
+    loadFiles();
+  </script>
+</body>
+</html>
