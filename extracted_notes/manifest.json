@@ -1,1 +1,15 @@
-[]
+[
+  "01_introduction_to_differentiable_models_and_neural_networks.html",
+  "02_mathematical_preliminaries.html",
+  "03_datasets_and_losses.html",
+  "04_linear_models.html",
+  "05_fully_connected_models.html",
+  "06_automatic_differentiation.html",
+  "07_convolutional_layers.html",
+  "08_convolutions_beyond_images.html",
+  "09_scaling_up_the_models.html",
+  "10_transformer_models.html",
+  "11_transformers_in_practice.html",
+  "12_graph_models.html",
+  "13_recurrent_models.html"
+]

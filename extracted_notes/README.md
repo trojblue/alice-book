@@ -4,6 +4,7 @@ Serve HTML exports from the `html/` directory via GitHub Pages.
 
 GitHub Pages
 ------------
+- Published site (listing the `html/` exports): https://trojblue.github.io/alice-book/
 - In repo settings → Pages, choose "Deploy from a branch", branch `main`, folder `/ (root)`.
 - The root `index.html` reads from `manifest.json` (static) and will also try the GitHub API if the repo is public.
 - To add more exports, drop them in `html/` and run `npm run build:manifest` (requires Node) which regenerates `manifest.json`.
