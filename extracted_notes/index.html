@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HTML Exports</title>
+  <title>Alice Book – HTML Exports</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     :root {
       --bg: #f4f6fb;
@@ -14,6 +15,23 @@
       --border: #e5e7eb;
       --shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
       font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .callout {
+      border: 1px solid rgba(37, 99, 235, 0.25);
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(37, 99, 235, 0.02));
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 0 0 16px;
+      color: var(--text);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+    }
+    .callout a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .callout a:hover {
+      text-decoration: underline;
     }
     * { box-sizing: border-box; }
     body {
@@ -103,9 +121,12 @@
 <body>
   <div class="frame">
     <header>
-      <h1>HTML Exports</h1>
+      <h1>Alice Book Exports</h1>
       <p class="hint">Auto-listed from <code>/html</code>. Drop exports there and rebuild the manifest.</p>
     </header>
+    <div class="callout">
+      Looking for the published notes? Open <a href="https://trojblue.github.io/alice-book/extracted_notes/">https://trojblue.github.io/alice-book/extracted_notes/</a>.
+    </div>
     <div id="list" class="grid" aria-live="polite"></div>
     <p id="status" class="status">Loading items…</p>
   </div>
@@ -141,7 +162,7 @@
     }
 
     function render(files) {
-      const sorted = [...files].sort((a, b) => b.name.localeCompare(a.name));
+      const sorted = [...files].sort((a, b) => a.name.localeCompare(b.name));
       listEl.innerHTML = "";
 
       if (!sorted.length) {
