@@ -3,32 +3,10 @@
 This repository contains a **Markdown extraction** of the book  
 *Alice’s Adventures in a Differentiable Wonderland*, together with **summarized / distilled notes** and **practical lab materials** derived from the original work.
 
-<div id="notes-popup" style="display:none; position:fixed; right:18px; bottom:18px; max-width:320px; background:#0f172a; color:#e2e8f0; border-radius:12px; padding:14px 16px 12px; box-shadow:0 18px 36px rgba(15,23,42,0.25); z-index:9999; border:1px solid rgba(255,255,255,0.12); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
-    <div>
-      <div style="font-weight:700; letter-spacing:-0.01em; margin-bottom:4px;">View the rendered notes</div>
-      <div style="font-size:14px; line-height:1.35;">Open the HTML exports at <a href="https://trojblue.github.io/alice-book/extracted_notes/" style="color:#93c5fd; font-weight:600;">https://trojblue.github.io/alice-book/extracted_notes/</a>.</div>
-    </div>
-    <button id="notes-popup-close" aria-label="Dismiss" style="background:transparent; border:none; color:#cbd5e1; font-size:16px; cursor:pointer; line-height:1;">×</button>
-  </div>
-</div>
-
-<script>
-(function() {
-  const popup = document.getElementById("notes-popup");
-  const closeBtn = document.getElementById("notes-popup-close");
-  const key = "alice-book-notes-popup-dismissed";
-  if (!popup || !closeBtn) return;
-  if (localStorage.getItem(key) === "true") return;
-  popup.style.display = "block";
-  closeBtn.addEventListener("click", () => {
-    popup.remove();
-    localStorage.setItem(key, "true");
-  });
-})();
-</script>
-
 The goal of this project is to make the material easier to navigate, annotate, and study in a plain-text, version-controlled format.
+
+- Rendered notes: https://trojblue.github.io/alice-book/extracted_notes/  
+- GitHub repo: https://github.com/trojblue/alice-book
 
 ---
 
